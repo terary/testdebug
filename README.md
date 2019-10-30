@@ -8,23 +8,22 @@ npm install
 
 ```json
     psql: {
-        host: 'localhost',
-        database: 'exodusiodb',
-        port: 5432,
-        user: 'exodusioun',
-        password: 'terary',
+        "host": " host goes here",
+        "database": " database name ",
+        "port": 5432,
+        "user": " user with permission to create relations",
+        "password": "  ",
       },
     bitcoinClient : {
-      host: 'localhost', 
-      network: "testnet", 
-      username: 'terary',
-      password: 'NEhvMh_8LEoQp4dt9iG_eBXdxLKiXPUtZub1gcs6Tco='
-      //port:"18333",
-      // headers: true
+        "host": " host goes here",
+      "network": "testnet", 
+      "username": " ",
+      "password": "  "
     },
     thisApp: {
-      minBlockHeight:1000000,
-      blockchainHeightCheckInterval: 15 * minutes
+      "minBlockHeight":1000000,
+      "blockchainHeightCheckInterval": 54000
+      "_comment": "blockchainHeightCheckInterval - 54000 = 15minutes" 
     }
 
 ```
