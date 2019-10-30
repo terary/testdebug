@@ -1,3 +1,4 @@
+"use strict";
 
 const installSQL = (dbName,userName) =>{
 return `
@@ -43,8 +44,7 @@ return `
     VALUES ('APP_BIRTH_DATE',now(),'Sanity value ');
     ----------------
     INSERT INTO opreturns (blockheight, blockhash, transhash, opreturn)   
-    VALUES( -1,  E'\\xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF' ,  E'\\xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF' , decode('Terary Awesome Opreturn', 'escape')) RETURNING *;
-    ----------------
+    VALUES( -1,  decode('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF','hex') ,  decode('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF','hex') , decode('Terary Awesome Opreturn', 'escape')) RETURNING *;
 
     `;
 }

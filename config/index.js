@@ -2,7 +2,7 @@
 const minutes = 60 * 1000;
 
 const configs =    require('./dev');
-const isDeployment  =false;
+const isDeployment  =true;
 
 if(isDeployment ){
     configs.psql= {
