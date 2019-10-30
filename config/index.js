@@ -1,17 +1,30 @@
+"use strict";
+const minutes = 60 * 1000;
 
+const configs =    require('./dev');
+const isDeployment  = true;
 
-// CREATE DATABASE exodusiodb
-// CREATE ROLE exodusioun;
-// password: terary  (use \password command to set password (or encrypt))
-// ALTER ROLE exodusioun WITH LOGIN;
-// CREATE TABLE dictionary ( key VARCHAR(255) PRIMARY KEY NOT NULL, value VARCHAR(255) NOT NULL, description VARCHAR(255)  NOT NULL DEFAULT '');
+if(isDeployment ){
+    configs.psql= {
+        host: 'localhost',
+        // host: undefined,
+        database: 'exodterarydb',
+        port: 5432,
+        user: 'exodterary',
+        password: 'terary',
+      };
+      configs.thisApp= {
+        minBlockHeight:1000000,
+        blockchainHeightCheckInterval: 1 * minutes
+      };
 
-
-
-
-// const c =   require('./dev')
-// module.exports = c;
-
-
-// const c = 
-module.exports =   require('./dev');
+}
+module.exports  = configs;
+// bash-4.2$ createuser exodterary --interactive --pwprompt
+// Enter password for new role: 
+// Enter it again: 
+// Shall the new role be a superuser? (y/n) n
+// Shall the new role be allowed to create databases? (y/n) y
+// Shall the new role be allowed to create more new roles? (y/n) n
+// Password: 
+// -bash-4.2$ 

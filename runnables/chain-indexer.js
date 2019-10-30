@@ -2,16 +2,16 @@
 
 const { Pool, Client } = require('pg')
 const configs = require('../config/');
-const SQLStatements = require('../dev/sql-statements');
+const SQLStatements = require('../src/sql/sql-statements');
 const Queries = SQLStatements.queries;
 const SQLExec = SQLStatements.exec;
 const pool = new Pool(configs.psql);
-const BLOCKCHAIN_HEIGHT_CHECK_INTERVAL = 1000 * 60 *  15;
-// const BLOCKCHAIN_HEIGHT_CHECK_INTERVAL =5000 ;
-const MINIMUM_BLOCK_INDEX = 1000000
-// let CURRENT_INDEXED_BLOCK_HEIGHT = 1383956
-// const BLOCKCHAIN_HEIGHT =1584263;//  CURRENT_BLOCK_HEIGHT + 1000;
 
+const BLOCKCHAIN_HEIGHT_CHECK_INTERVAL = configs.thisApp.blockchainHeightCheckInterval;
+//const BLOCKCHAIN_HEIGHT_CHECK_INTERVAL = 1000 * 60 *  15;
+// const BLOCKCHAIN_HEIGHT_CHECK_INTERVAL =5000 ;
+
+const MINIMUM_BLOCK_INDEX =configs.thisApp.minBlockHeight  // 1000000
 const discardDbResponse = (err,response)=>{}
 
   
@@ -19,8 +19,6 @@ const bitcoinInterface = require('../src/bitcoin/op-return-getter')(configs.bitc
 const IndexerLoop = require('../src/bitcoin/indexer-loop');
 
 
-
-/// IndexerLoop.setIndexes(BLOCKCHAIN_HEIGHT, CURRENT_INDEXED_BLOCK_HEIGHT);
 
 
 IndexerLoop.worker.setWorkFunction((currentBlockHeight,  blockchainHeight)=>{ //  blockChainHeight doesn't belong?
