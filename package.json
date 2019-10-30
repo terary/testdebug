@@ -7,7 +7,6 @@
     "indexer-install": "node runnables/install.js",
     "www": "node runnables/server-wrapper.js",
     "indexer": "node runnables/chain-indexer.js",
-
     "test": "jest op-return-getter.test.js",
     "testx": "jest",
     "test-bitcoin-core": "jest bitcoin-core"
