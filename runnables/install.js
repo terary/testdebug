@@ -11,7 +11,8 @@ const buildTablesSQL = SQL.installSQL(configs.psql.database,configs.psql.user);
 
 pool.query(buildTablesSQL)
 .then(response=>{
-    console.log('response:', response)
+    console.log('Built tables and things');
+    pool.end();
 }).catch( e => {
     console.log(e)
 })

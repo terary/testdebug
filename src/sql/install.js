@@ -1,6 +1,7 @@
 
 const installSQL = (dbName,userName) =>{
 return `
+    DROP VIEW  IF EXISTS vwOpReturnsDecoded;    
     DROP TABLE IF EXISTS dictionary;
     DROP TABLE IF EXISTS opreturns;
     DROP TABLE IF EXISTS opReturnIndexLog; 
@@ -32,9 +33,18 @@ return `
 		description  VARCHAR(255)
 	);
    
-
+   -----------------
+   CREATE VIEW vwOpReturnsDecoded AS
+    SELECT blockheight,  encode(blockhash, 'hex') as blockhash_hex,  encode(transhash, 'hex') as transhash_hex,  
+    encode(opreturn, 'hex') as opreturn_hex, encode(opreturn, 'escape') as opreturn_escape
+    FROM opreturns; 
+    -----------------
 	INSERT INTO dictionary (key, value, description) 
-	VALUES ('APP_BIRTH_DATE',now(),'Sanity value ');
+    VALUES ('APP_BIRTH_DATE',now(),'Sanity value ');
+    ----------------
+    INSERT INTO opreturns (blockheight, blockhash, transhash, opreturn)   
+    VALUES( -1,  E'\\xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF' ,  E'\\xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF' , decode('Terary Awesome Opreturn', 'escape')) RETURNING *;
+    ----------------
 
     `;
 }
