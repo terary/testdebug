@@ -1,0 +1,136 @@
+
+
+- op_return position 0
+txid: 842c5d149b7654eee9fea29166f06493f201ccff98d78fe84770b325ea958e8b
+- op_return position 1
+txid: 61c07a5cbbf4cb97288d5a719b5b371d32022d94c7207aa53374d68c47df5614
+_ no op return
+txid: 5a8d8aebf733ec280d86787927eb76db2fc7381e13ca85422cfee94297f6f551
+
+
+MQ bitcoind option seems promising - 
+ would require a sync function which in turn would call pre-existing code.
+
+in terms of this project start->finish hinderance outweighs benefit
+
+
+https://testnet.smartbit.com.au/tx/61c07a5cbbf4cb97288d5a719b5b371d32022d94c7207aa53374d68c47df5614
+https://testnet.smartbit.com.au/tx/[transaction id ? ]  gives op code
+ 
+bitcoin-cli -conf=bitcoin-testnet.conf -testnet getblock 00000000000c0311be97e9097cb0e43c8f9af94ec30774ca9e93064b813ccbdb
+
+bitcoin-cli -conf=bitcoin-testnet.conf -testnet gettransaction 47baaf2ff7310c4792981a6017c3d3156cf080159b043467127bcde656e3bcf9 
+
+https://testnet.smartbit.com.au/tx/61c07a5cbbf4cb97288d5a719b5b371d3202d94c7207aa53374d68c47df5614
+
+gettxout  <-- what does this one do
+listsinceblock <-- "or transaction ..."
+listtransactions <-- 
+sendrawtransaction <-- review - if this something that will require 
+scantxoutset <-- Experimental
+
+# what is that??  
+If you're using the mainnet, index higher than the blockheight 500,000. If you're using the testnet only index higher than 1,000,000.
+mainnet: 600789 
+testnet: 1,583,949 (current block height)
+
+
+configs:
+	bitcoind rpcpassword
+
+"1GDfQp5vwapHZLzsmCuiaPECLirRUo95Aq"
+
+Postgres
+
+bitcoind -conf=bitcoin-testnet.conf -testnet getblock 00000000000c0311be97e9097cb0e43c8f9af94ec30774ca9e93064b813ccbdb
+
+ official Bitcoin Core releases,
+
+
+
+https://software.hixie.ch/utilities/cgi/unicode-decoder/utf8-decoder
+
+**** gets the op_return ****
+bitcoin-cli -conf=bitcoin-testnet.conf -testnet getrawtransaction 47baaf2ff7310c4792981a6017c3d3156cf080159b043467127bcde656e3bcf9 1
+
+
+OP_RETURN opcode in an output’s scriptPubKey, and use it to verify a contract or some other digital asset.
+
+
+
+import __future__
+import requests; from binascii import unhexlify
+rdata = requests.get("https://api.chain.com/v2/bitcoin/addresses/1Bj5UVzWQ84iBCUiy5eQ1NEfWfJ4a3yKG1/op-returns?api-key-id=DEMO-4a5e1e4" % "1Bj5UVzWQ84iBCUiy5eQ1NEfWfJ4a3yKG1") # substitute URL here
+assert rdata.status_code == 200
+jdata = rdata.json()
+hexdata = [unhexlify(str(t["text"]).encode("utf-8"))) for t in jdata
+print(hexdata)
+
+
+
+
+Payment information
+URI: bitcoin:2N72FSHZs3S6fC1GtoZeqHUj4MzXUuJ5s94
+Address: 2N72FSHZs3S6fC1GtoZeqHUj4MzXUuJ5s94
+
+
+
+
+
+Maybe too late, but here's an example of using Blockr.io on testnet with raw hex dump:
+
+http://tbtc.blockr.io/api/v1/tx/raw/5bb4f41ad7ac687db5126cb66a4971100f4137a3056d85ee27343ce429dbe4bb
+
+
+
+
+
+//*******************  jest 
+
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Jest All",
+            "program": "${workspaceFolder}/node_modules/.bin/jest",
+            "args": ["--runInBand"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "windows": {
+              "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+            }
+          },
+          {
+            "type": "node",
+            "request": "launch",
+            "name": "Jest Current File",
+            "program": "${workspaceFolder}/node_modules/.bin/jest",
+            "args": [
+              "${fileBasenameNoExtension}",
+              "--config",
+              "jest.config.js"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "windows": {
+              "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+            }
+          }
+
+
+//********************** 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
