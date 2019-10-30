@@ -2,7 +2,7 @@
 
 const { Pool  } = require('pg')
 const configs = require('../config/');
-const SQLStatements = require('../dev/sql-statements');
+const SQLStatements = require('./sql/sql-statements');
 const Queries = SQLStatements.queries;
 const SQLExec = SQLStatements.exec;
 const pool = new Pool(configs.psql);
