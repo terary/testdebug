@@ -2,12 +2,21 @@
 const util = require('util');
 const EventEmitter  = require('events');
 const BitcoinClient = require('bitcoin-core');
-const KNOWN_ERRORS = require('./BtError').KNOWN_ERRORS;
 const BtError = require('./BtError').BtError;
 
 const AS_JSON = true; // argument for bitcoin client
 
+/**
+ *
+ *
+ * @param {json} trans transaction description from bitcoin getrawtransaction
+ * @returns object with any op_return data {transactionHash: OP_RETURN}
+ * 
+ * Assumes there will be only one OP_RETURN per transaction
+ * 
+ */
 const transToOpReturn = (trans) => {
+
     const OP_RETURN = trans.vout.reduce((acc,cur,idx,arr) => {
         if(cur.scriptPubKey.asm.indexOf('OP_RETURN') !== -1 ){
             return  cur.scriptPubKey.asm.replace('OP_RETURN','').trim();
@@ -18,15 +27,22 @@ const transToOpReturn = (trans) => {
 }
 
 
-
+/**
+ *  Serves as proxy class to require('bitcoin-core');
+ * 
+ *  Calls  to either processBlockByHash(...) processBlockByHeight(...)
+ *  Will eventually lead to event opReturnFetchComplete or error 
+ *
+ * @class OpReturnGetter
+ * @extends {EventEmitter}
+ */
 class OpReturnGetter extends EventEmitter {
-    // emits:
-    //      opReturnFetchComplete
     constructor(bitcoinClientConfigs){
         super();
 
-        bitcoinClientConfigs.headers = false; // true cause the response to be something other than expected
-        this._bitcoinClient = new BitcoinClient(bitcoinClientConfigs);
+        const configs = Object.assign({},bitcoinClientConfigs, {headers:false}  );
+        //setting true cause the alternative RPC response,
+        this._bitcoinClient = new BitcoinClient(configs);
     
 
         this.on('errorWrapper', function(btErrorCode, error){
@@ -41,29 +57,39 @@ class OpReturnGetter extends EventEmitter {
         this.privateTestFunctions.fetchRawTransactions =this._fetchRawTransactions;
     }
 
+    /**
+     * @private
+     * @param {string} blockHash - blockHeight for the supplied transaction ids
+     * @param {string} blockHeight - blockHeight for the supplied transaction ids
+     * @param {[string]} TXIDs - transaction ids to be queried. 
+     * @returns - emits: opReturnFetchComplete with {blockHeight, blockHash,totalTrans,  opReturns:: [{transHash,OP_RETURN},...]}
+     * @memberof OpReturnGetter
+     */
     _fetchRawTransactions(blockHash, blockHeight, TXIDs){
         const blockOpReturns = {blockHeight, blockHash, opReturns:[], totalTrans:undefined}
  
         if( !TXIDs || !Array.isArray(TXIDs)){
-            //throw new BtError('FAILED_BT_OP_BATCH_GETRAWTRANSACTION_EXPECTED_ARRAY');
             return this.emit('errorWrapper', 'FAILED_BT_OP_BATCH_GETRAWTRANSACTION_EXPECTED_ARRAY');
-
-            //return this.emit('opReturnFetchComplete', blockOpReturns);
         }
-
 
         const batchTx = TXIDs.map(t=>{
             return {method:'getrawtransaction', parameters: [t, AS_JSON] }
         })
-        // batchTx.push({method: 'getrawtransaction', parameters: ['9ea55bb90186b49ddab3c1d192fa1c0d911c8300de6cc7fcf8db8570898a27aa', true] });
-
         // const batchTx = []
         // batchTx.push({method: 'getrawtransaction', parameters: ['842c5d149b7654eee9fea29166f06493f201ccff98d78fe84770b325ea958e8b', true] });
-        // batchTx.push({method: 'getrawtransaction', parameters: ['61c07a5cbbf4cb97288d5a719b5b371d32022d94c7207aa53374d68c47df5614', true] });
-        // batchTx.push({method: 'getrawtransaction', parameters: ['5a8d8aebf733ec280d86787927eb76db2fc7381e13ca85422cfee94297f6f551', true] });
-        
+
+
         this._bitcoinClient.command(batchTx)
         .then((TXs) => {
+        /*        
+            Calling batch command [{method: 'getrawtransaction', parameters: [ ... ]}, ... ]
+            Add significant overhead.  Definitely an issue.  No time to fix.
+            
+            ** Find better way **
+            Confirmed performance issues not database or call stack.
+            Ran same code bypassing on 1000 blocks - finishes 7seconds 
+            With this code 2m20s 
+        */        
  
             if(util.types.isNativeError(TXs[0]) || TXs[0].constructor.name == 'RpcError' ) {
                 throw new BtError('FAILED_BT_OP_BATCH_GETRAWTRANSACTION');
@@ -87,51 +113,61 @@ class OpReturnGetter extends EventEmitter {
             }
             throw(btError);
 
-        })
-        .catch(e=>{
+        }).catch(e=>{
             const btError =new BtError('FAILED_BT_OP_BATCH_GETRAWTRANSACTION',e);
             btError.message = `Working on blockHash: '${blockHash}' ${btError.message}`;
             return this.emit('errorWrapper',btError);                
         });
     }
-    getBlockCount(){
+    
+    /**
+     *
+     *
+     * @returns Promise - resolves with the current blockHeight
+     * @memberof OpReturnGetter
+     */
+    getBlockCountAsPromised(){
         return this._bitcoinClient.getBlockCount();
     }
 
-    getBlockHash(blockHeight){
-        
+    /**
+     *
+     *
+     * @param {*} blockHeight
+     * @memberof OpReturnGetter 
+     * 
+     * This will lead to emitting 'opReturnFetchComplete'
+     * Fetch transaction OP_RETURN given BlockHeight
+     * 
+     */
+    processBlockByHeight( blockHeight ){
         const self =this;
         this._bitcoinClient.getBlockHash(blockHeight)
-        .then((block) => { 
-
-            // could chain this 
-            
-            //const blk =   blockWrapper;  // verify this will always be 0 position
-            // self._fetchRawTransactions(blockHash,blk.height, blk.tx)
-            // self._fetchRawTransactions(blockHash,block.height, block.tx)
-            // console.log(block);
-            return this.process_block_id(block)
+        .then((blockHash) => { 
+            return this.processBlockByHash(blockHash)
         }).catch((e) => {
             this.emit('errorWrapper', 'FAILED_BT_OP_GETBLOCKHASH', e);
-        });        		        
+        });        		                
     }
 
-    process_block_id(blockHash) {
+    /**
+     *
+     *
+     * @param {*} blockHash
+     * @memberof OpReturnGetter 
+     * 
+     * This will lead to emitting 'opReturnFetchComplete'
+     * Fetch transaction OP_RETURN given BlockHash
+     * 
+     */
+    processBlockByHash(blockHash) {
         const self =this;
-        //********************************** */
-        // bitcoinClient.getBlock('00000000000c0311be97e9097cb0e43c8f9af94ec30774ca9e93064b813ccbdb')
         this._bitcoinClient.getBlock(blockHash)
         .then((block) => { 
-            //const blk =   blockWrapper;  // verify this will always be 0 position
-            // self._fetchRawTransactions(blockHash,blk.height, blk.tx)
             self._fetchRawTransactions(blockHash,block.height, block.tx)
-
-    
         }).catch((e) => {
             this.emit('errorWrapper', 'FAILED_BT_OP_GETBLOCK', e);
         });
-    
-        //********************************** */
     }
 
 }

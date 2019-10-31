@@ -5,3 +5,7 @@ dev
 package-lock.json
 *.sh
 coverage
+
+
+my-personal-git
+git-exodus

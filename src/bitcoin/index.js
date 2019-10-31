@@ -1,0 +1,7 @@
+/*
+
+Nothing here but us chickens.
+
+This would be more useful if the goal of this project was a distributable node module.
+
+*/

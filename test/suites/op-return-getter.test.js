@@ -21,7 +21,7 @@ describe('TheOpReturnGetter', () => {
               );
             done();
         })
-        opReturnGetter.process_block_id('00000000000c0311be97e9097cb0e43c8f9af94ec30774ca9e93064b813ccbdb');
+        opReturnGetter.processBlockByHash('00000000000c0311be97e9097cb0e43c8f9af94ec30774ca9e93064b813ccbdb');
     });
     describe('_fetchRawTransactions',()=>{
         test.skip('Should not cause error if given bad parameters ', (done) => {
@@ -50,7 +50,7 @@ describe('TheOpReturnGetter', () => {
                 expect(err.originalError.code).toBe('ECONNRESET');
                 done()
             });
-            badGetter.process_block_id('00000000000c0311be97e9097cb0e43c8f9af94ec30774ca9e93064b813ccbdb');
+            badGetter.processBlockByHash('00000000000c0311be97e9097cb0e43c8f9af94ec30774ca9e93064b813ccbdb');
         });
         test(`Should emit error with code 'FAILED_BT_OP_GETBLOCK' when connected wrong username (originalCode= 401) `, (done) => { 
             badConfigs.username = '18333';
@@ -61,7 +61,7 @@ describe('TheOpReturnGetter', () => {
                 expect(err.originalError.code).toEqual(401);
                 done()
             });
-            badGetter.process_block_id('00000000000c0311be97e9097cb0e43c8f9af94ec30774ca9e93064b813ccbdb');
+            badGetter.processBlockByHash('00000000000c0311be97e9097cb0e43c8f9af94ec30774ca9e93064b813ccbdb');
         });
         test(`Should emit error with code 'FAILED_BT_OP_GETBLOCK' when submitted bad block hash `, (done) => { 
             const badGetter = require('../../src/bitcoin/op-return-getter')(badConfigs);
@@ -71,7 +71,7 @@ describe('TheOpReturnGetter', () => {
                 expect(err.code).toBe('FAILED_BT_OP_GETBLOCK');
                 done()
             });
-            badGetter.process_block_id('NOT_REAL_BLOCK_HASH');
+            badGetter.processBlockByHash('NOT_REAL_BLOCK_HASH');
         });
         test(`Should emit error with code 'FAILED_BT_OP_BATCH_GETRAWTRANSACTION' when calling _fetchRawTransactions `, (done) => { 
             //

@@ -5,7 +5,7 @@ const isDeploy = !isTest && !isDev ;
 
 if(isTest ){
   console.log(`'Running with 'test' configs`)
-  module.exports  =require('./test');
+  module.exports  =require('./testing');
 } else if (isDev) {
   console.log(`'Running with 'dev' configs`)
   module.exports  =require('./dev');

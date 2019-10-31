@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 const minutes = 60 * 1000;
 
 

@@ -6,7 +6,6 @@ const minutes = 60 * 1000;
 const configs = {
     psql: {
         host: 'localhost',
-        // host: undefined,
         database: 'exodusiodb',
         port: 5432,
         user: 'exodusioun',

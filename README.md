@@ -1,4 +1,11 @@
+
+
 ### Install
+Steps 1 - 3 to install
+Step 4 to run web server
+Step 5 to run indexer
+Theoretically webserver can be run in the same script.  Not recommended nor implemented.
+
 **1.  Install required modules**
 ```bash
 npm install
@@ -36,6 +43,7 @@ npm run indexer-install
 npm run www
 ```
 Pre-installed block records can be seen
+
 http://localhost:3000/opreturn/Terary%20Awesome%20Opreturn
 http://localhost:3000/opreturnHex/54657261727920417765736f6d65204f7072657475726e
 

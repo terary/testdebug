@@ -23,7 +23,7 @@ const IndexerLoop = require('../src/bitcoin/indexer-loop');
 
 IndexerLoop.worker.setWorkFunction((currentBlockHeight,  blockchainHeight)=>{ //  blockChainHeight doesn't belong?
     console.log(`\t\tWorker starting on block: ${currentBlockHeight}`)
-    bitcoinInterface.getBlockHash( currentBlockHeight)
+    bitcoinInterface.processBlockByHeight( currentBlockHeight)
 })
 
 bitcoinInterface.on('opReturnFetchComplete', (data)=> {
@@ -67,7 +67,7 @@ const adjustChainHeights = function(){
     // lets get the party started.
     const daCounts = [];
     daCounts.push(SQLExec.queryAsPromised(pool,Queries.selectLastIndexedBlock()).then(r=>r.rows[0]['lastblockhieght'] ) );
-    daCounts.push(bitcoinInterface.getBlockCount());
+    daCounts.push(bitcoinInterface.getBlockCountAsPromised());
     Promise.all(daCounts)
     .then(counts =>{
         const blockchainHeight = Math.max(...counts);

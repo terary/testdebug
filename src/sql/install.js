@@ -1,5 +1,10 @@
 "use strict";
 
+/*
+    The obvious.
+    Definitions of database objects.
+*/
+
 const installSQL = (dbName,userName) =>{
 return `
     DROP VIEW  IF EXISTS vwOpReturnsDecoded;    

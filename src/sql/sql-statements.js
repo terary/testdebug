@@ -1,10 +1,12 @@
+"use strict";
+
+/*
+    SQL statements and pg helper functions.
+*/
+
 
 const assert = require('assert');
-
-const classFieldNames = ['year', 'semester', 'student_id', 'subject_id'];
 const fieldPosDictionary  = ['key', 'value', 'description'];
-
-
 
 const queries = {}
 const exec = {}
@@ -29,7 +31,6 @@ const separateKeyValue = (obj) => {
 
 const  updateQuery = (tableName, idFieldName, fieldNames, record ) =>{
     const fields = [];
-    // const values = [];
     record_id =  record[idFieldName];
     delete record[idFieldName]; 
    const {fldNames, values, positions} = separateKeyValue(record);
@@ -103,22 +104,27 @@ queries.insertDictionary = (dictionaryItem) => {
 
 
 queries.insertOpReturnIndexLog = (record) => {
-// opReturnIndexLog
     const r = record;
     return {
-        text: ' INSERT INTO opReturnIndexLog (blockheight, blockhash,transCount, opReturnCount)   VALUES( $1, $2, $3, $4) RETURNING *',
+        text: ' INSERT INTO opReturnIndexLog (blockheight, blockhash,transCount, opReturnCount)   VALUES( $1, $2, $3, $4) ',
         values: [r['blockheight'], r['blockhash'], r['transCount'], r['opReturnCount'] ]
     }
 }
 queries.insertOpReturn = (record) => {
     const r = record;
     return {
-        text: ' INSERT INTO opreturns (blockheight, blockhash, transhash, opreturn)   VALUES( $1, $2, $3, $4) RETURNING *',
+        text: ' PERFORM insertOpreturns($1, $2, $3, $4)',
+        values: [r['blockheight'], r['blockhash'], r['transhash'], r['opreturn'] ]
+      }
+}
+queries.insertOpReturn_old = (record) => {
+    const r = record;
+    return {
+        text: ' INSERT INTO opreturnsX (blockheight, blockhash, transhash, opreturn)   VALUES( $1, $2, $3, $4) RETURNING *',
         values: [r['blockheight'], r['blockhash'], r['transhash'], r['opreturn'] ]
       }
 }
 
-// ******************************************
 const defaultCallBack  = (err, result) => {
     if (err) {
       console.log('Error:',err);

@@ -20,7 +20,9 @@ class IndexWorker {
     get isInitialized(){
         return this._isInitialized;
     }
-//    this._worker.setIndexs(blockChainHeight, initialHieght)
+    // get status () {
+    //     return this._state;
+    // }
     initialize(dbBlockHeight,blockchainHeight){
         if(! this.isInitialized) {
             this._blockHeights.blockchainHeight = blockchainHeight;
@@ -30,21 +32,21 @@ class IndexWorker {
     }
     adjustBlockchainHeight(blockchainHeight){
         this._blockHeights.blockchainHeight = blockchainHeight;
-        // this._blockHeights.currentIndex = initialHieght||this._blockHeights.currentIndex;
-
     }
+
     isIdle(){
         return this._state ===  WORKER_STATES['IDLE']; 
     }
     _setState(state){
-        this._state = WORKER_STATES[state] || 'undetermined' 
+        this._state = WORKER_STATES[state] || 'undetermined'
+        return  this._state; 
     }
+
     _doWork(){
-        const self = this;
+        // const self = this;
         // console.log('\t\tStarted Work');
 
         if(this._blockHeights.finished()){
-            //console.log('\t\tNo more work to be done - staying idle');
             this._setState('IDLE');
         }else {
             this._workFunction(++this._blockHeights.currentIndex,this._blockHeights.blockchainHeight  )    
@@ -81,43 +83,20 @@ class IndexerLoop {
         // let dbLastIndexed = 3;
         // this._worker.setIndexes(blockchainHeight, dbLastIndexed)
     }
-    // setIndexes(blockchaingHeight, dbLastIndexed) {
-    //     this._worker.setIndexes(blockchaingHeight, dbLastIndexed);
-    //     /// and doWork?
-    // }
-    // _nonce(){
-    //     const self = this;
-    //     return setInterval(function(){
-    //         self.checkBlockHeight()
-    //     },this.INDEX_ADJUST_CLICK);
-    // }
+
     get worker(){
         return this._worker;
     }
-    // startWork(){
-    //     //console.log(`\tDo work little worker`)
-    //     this._worker.startWork() ;
-    // }
-    // finishedWork(){
-    //     //console.log(`\tAll done little worker`)
-    //     this._worker.finishedWork() ;
-    // }
-    // setWorkFunction(fn){
-    //     this._worker.setWorkFunction(fn);
-    // }
-    // setBlockHeightCheckFunction(fn){
-    //     this._checkblockHeightFunction =fn;
-    // }
+
     initialize(fn,interval) {
         if(!this._isInitialized) {
-            // ------------------
+
             this._checkblockHeightFunction =fn;
             this._interval = interval
             const self = this;
             this._intervalHandle= setInterval(function(){
                 self.checkBlockHeight()
             },this._interval);
-            // ----------------------
             this._isInitialized = true;
         }
     }

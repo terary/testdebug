@@ -1,4 +1,10 @@
 "use strict";
+/**
+ * Simple demonstration - server two endpoints.
+ *      /opreturn/:opreturn   -> returns transaction data for given op_return
+ *      /opreturn/:opreturn   -> returns transaction data for given op_return (hex)
+ * 
+ */
 
 const { Pool  } = require('pg')
 const configs = require('../config/');
